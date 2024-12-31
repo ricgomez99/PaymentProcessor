@@ -2,12 +2,38 @@ import Card from '../../components/Card'
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, describe, it, expect, beforeEach } from 'vitest'
 
+const cardMock = {
+  title: 'Card',
+  description: 'a new card',
+  price: 25,
+  imageUrl: '',
+  stock: 2,
+}
+
 describe('Card', () => {
   afterEach(cleanup)
-  beforeEach(() => render(<Card />))
+  beforeEach(() =>
+    render(
+      <Card
+        title={cardMock.title}
+        description={cardMock.description}
+        price={cardMock.price}
+        imageUrl={cardMock.imageUrl}
+        stock={cardMock.stock}
+      />
+    )
+  )
 
   it('should render the component', () => {
-    render(<Card />)
+    render(
+      <Card
+        title={cardMock.title}
+        description={cardMock.description}
+        price={cardMock.price}
+        imageUrl={cardMock.imageUrl}
+        stock={cardMock.stock}
+      />
+    )
   })
 
   it('should render the product image', () => {
@@ -15,7 +41,7 @@ describe('Card', () => {
   })
 
   it('should render the product title', () => {
-    screen.getByText('Card Title')
+    screen.getByRole('cardTitle')
   })
 
   it('should render the product description', () => {
@@ -27,17 +53,19 @@ describe('Card', () => {
     screen.getByRole('price')
   })
 
+  it('should render the product stock', () => {
+    screen.getByRole('stock')
+  })
+
   it('should render the "Pay with credit card" button', () => {
     screen.getByText('Pay with credit card')
   })
 
-  it('should increment counter when user clicks on Increment button', () => {
-    const initialCounterValue = parseInt(screen.getByRole('counter').innerText)
-    const button = screen.getByText('Increment')
-
+  it('should open a modal when user clicks on the button', () => {
+    const button = screen.getByText('Pay with credit card')
     fireEvent.click(button)
-    const updateCounterValue = parseInt(screen.getByRole('counter').innerText)
+    const modal = screen.getByRole('dialog')
 
-    expect(updateCounterValue).toEqual(initialCounterValue + 1)
+    expect(modal).toBeDefined()
   })
 })
