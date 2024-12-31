@@ -3,9 +3,9 @@ import MainPage from './pages/main'
 
 function App() {
   return (
-    <>
+    <main>
       <MainPage />
-    </>
+    </main>
   )
 }
 

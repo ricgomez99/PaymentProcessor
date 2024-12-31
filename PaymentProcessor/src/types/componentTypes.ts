@@ -1,25 +1,19 @@
-import { FieldValues, RegisterOptions, UseFormRegister } from 'react-hook-form'
+import { RegisterOptions, UseFormRegister } from 'react-hook-form'
 
-export interface InputTypes {
-  register: UseFormRegister<FieldValues>
-  type: string
-  placeholder: string
-  title: string
-  role: string
-
-  validation?:
-    | RegisterOptions<FieldValues, string>
-    | ValidateFunction
-    | undefined
+export interface FormValues {
+  cardName: string
+  cardNumber: number
+  expDate: string
+  code: number
 }
 
-type ValidateFunction = {
-  required: {
-    value: boolean
-    message: string
-  }
-
-  validate: (data: FieldValues) => void
+export interface InputTypes {
+  register: UseFormRegister<FormValues>
+  type: string
+  placeholder: string
+  title: keyof FormValues
+  role: string
+  validation?: RegisterOptions<FormValues>
 }
 
 export type ModalType = {

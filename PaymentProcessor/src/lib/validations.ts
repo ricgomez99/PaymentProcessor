@@ -1,7 +1,8 @@
 import valid from 'card-validator'
-import { FieldValues } from 'react-hook-form'
+import { RegisterOptions } from 'react-hook-form'
+import { FormValues } from '../types/componentTypes'
 
-export const nameValidation = {
+export const nameValidation: RegisterOptions<FormValues> = {
   required: {
     value: true,
     message: 'el nombre es requerido',
@@ -18,49 +19,50 @@ export const nameValidation = {
   },
 }
 
-export const cardNumberValidation = (value: FieldValues) => {
-  return {
-    required: {
-      value: true,
-      message: 'el número de la tarjeta es requerido',
-    },
+export const cardNumberValidation: RegisterOptions<FormValues> = {
+  required: {
+    value: true,
+    message: 'el número de la tarjeta es requerido',
+  },
 
-    validate: () => {
-      console.log(value)
-      if (value) {
-        const { card, isValid } = valid.number(value)
-        console.log(card, isValid)
-      }
-    },
-  }
+  validate: (value: string | number) => {
+    const formattedValue = String(value)
+    const { isValid, card } = valid.number(formattedValue)
+    console.log(card)
+    return isValid || 'Número no válido'
+  },
 }
 
-export const cardExpDateValidation = (value: FieldValues) => {
-  return {
-    required: {
-      value: true,
-      message: 'la fecha de expiración es requerida',
-    },
+export const cardExpDateValidation: RegisterOptions<FormValues> = {
+  required: {
+    value: true,
+    message: 'la fecha de expiración es requerida',
+  },
 
-    validate: () => {
-      const { isValid } = valid.expirationDate(value)
-      console.log(isValid)
-    },
-  }
+  validate: (value: string | number) => {
+    const stringValue = value.toString()
+    const currentYear = new Date().getFullYear().toString()
+    const year = stringValue.replaceAll('-', ' ').split(' ')[0]
+    const [theYear, month] = stringValue.replaceAll('-', ' ').split(' ')
+
+    if (year <= currentYear) {
+      return 'Año no válido'
+    } else {
+      const { isValid } = valid.expirationDate(`${theYear}-${month}`)
+      return isValid || 'Fecha no válida'
+    }
+  },
 }
 
-export const cardCodeValidation = (value: FieldValues) => {
-  return {
-    required: {
-      value: true,
-      message: 'el código de seguridad es requerida',
-    },
+export const cardCodeValidation: RegisterOptions<FormValues> = {
+  required: {
+    value: true,
+    message: 'el código de seguridad es requerida',
+  },
 
-    validate: (data: FieldValues) => {
-      if (data === value) {
-        const { isValid } = valid.cvv(value)
-        console.log(isValid)
-      }
-    },
-  }
+  validate: (value: string | number) => {
+    const formattedValue = String(value)
+    const { isValid } = valid.cvv(formattedValue)
+    return isValid || 'código no válido'
+  },
 }
