@@ -45,7 +45,6 @@ describe('Card', () => {
   })
 
   it('should render the product description', () => {
-    screen.getByText('Description')
     screen.getByRole('description')
   })
 

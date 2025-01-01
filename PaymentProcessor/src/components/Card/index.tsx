@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react'
 import Modal from '../Modal'
 import PayForm from '../PayForm'
 import { CardData } from '../../types/componentTypes'
+import { BiChevronDown } from 'react-icons/bi'
 
 export default function Card({
   title,
@@ -26,41 +27,45 @@ export default function Card({
   )
   return (
     <>
-      <article className="flex flex-col justify-between max-w-lg bg-white rounded-lg">
+      <article className="flex flex-col justify-between max-w-md bg-[#F8FAFC] rounded-lg">
         <img
           alt="product image"
           src={imageUrl}
-          className="w-full aspect-square object-cover rounded-t-lg"
+          className="w-full pb-1 aspect-square object-cover rounded-t-lg"
         />
-        <div className="p-2 flex flex-row justify-between items-center">
+        <div className="px-2 flex flex-row justify-between items-center">
           <h3
             role="cardTitle"
-            className="text-3xl text-ellipsis text-gray-400 font-bold text-left"
+            className="text-2xl text-ellipsis text-slate-700 font-semibold text-left"
           >
             {title}
           </h3>
-          <button onClick={handleOpenDetails}></button>
+          <BiChevronDown
+            className={`${
+              showDetails && 'rotate-180'
+            } transition-all duration-200 ease-in-out text-slate-700 cursor-pointer font-bold text-3xl`}
+            onClick={handleOpenDetails}
+          />
         </div>
         <div
           className={`${
             showDetails
-              ? 'flex flex-col opacity-100 p-2 text-left'
-              : 'overflow-hidden w-0 h-0 opacity-0 translate-x-[-10px]'
+              ? 'flex flex-col opacity-100 text-left'
+              : 'overflow-y-hidden w-0 h-0 opacity-0 translate-y-[-12px]'
           } transition-all duration-300 ease-in-out p-2`}
         >
-          <span className="text-lg text-gray-400 font-semibold">
-            Description
-          </span>
-          <p role="description" className="text-base font-normal text-gray-900">
+          <p role="description" className="text-base text-gray-800">
             {description}
           </p>
-          <span className="text-lg text-gray-400 font-semibold">Price</span>
-          <span role="price" className="text-base font-normal text-gray-900">
-            {formatPrice}
-          </span>
-          <span role="stock" className="text-base font-normal text-gray-900">
-            Stock: {stock}
-          </span>
+          <div className="flex flex-row justify-start gap-3">
+            <p role="price" className="text-base text-gray-400 font-semibold">
+              Price:{' '}
+              <span className="text-sm text-gray-800">{formatPrice}</span>
+            </p>
+            <p role="stock" className="text-gray-400 font-semibold">
+              Stock: <span className="text-sm text-gray-800">{stock}</span>
+            </p>
+          </div>
         </div>
         <div className="p-2 cursor-pointer">
           <button className="w-full" onClick={handleClick}>
