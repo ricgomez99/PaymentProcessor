@@ -3,8 +3,10 @@ import Modal from '../Modal'
 import PayForm from '../PayForm'
 import { CardData } from '../../types/componentTypes'
 import { BiChevronDown } from 'react-icons/bi'
+import { useProductContext } from '../../hooks/useProductContext'
 
 export default function Card({
+  id,
   title,
   description,
   price,
@@ -14,13 +16,18 @@ export default function Card({
   const [isOpen, setIsOpen] = useState(false)
   const [showDetails, setShowDetails] = useState(false)
 
+  const { saveProductId } = useProductContext()
+
   const { format } = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
   })
   const formatPrice = format(price)
 
-  const handleClick = useCallback(() => setIsOpen((prev) => !prev), [])
+  const handleClick = useCallback(() => {
+    saveProductId(id)
+    setIsOpen((prev) => !prev)
+  }, [id, saveProductId])
   const handleOpenDetails = useCallback(
     () => setShowDetails((prev) => !prev),
     []

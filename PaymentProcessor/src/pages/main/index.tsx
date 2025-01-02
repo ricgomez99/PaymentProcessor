@@ -7,6 +7,7 @@ export default function MainPage() {
       {cardMocks &&
         cardMocks.map((card) => (
           <Card
+            id={card.id}
             title={card.title}
             description={card.description}
             price={card.price}
