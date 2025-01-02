@@ -1,14 +1,16 @@
 import './App.css'
-import MainPage from './pages/main'
-import { DashboardContext } from './components/context'
+import { ProductsProvider } from './components/ProductsProvider'
+import { RouterProvider } from 'react-router-dom'
+import { Routes } from './routes/Routes'
 
 function App() {
+  const routes = Routes()
   return (
-    <DashboardContext.Provider value={undefined}>
+    <ProductsProvider>
       <main>
-        <MainPage />
+        <RouterProvider router={routes} />
       </main>
-    </DashboardContext.Provider>
+    </ProductsProvider>
   )
 }
 

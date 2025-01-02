@@ -1,6 +1,6 @@
 import { RegisterOptions, UseFormRegister } from 'react-hook-form'
 
-export interface FormValues {
+export interface FormValues extends Partial<ShippingAddress> {
   cardName: string
   cardNumber: number
   expDate: string
@@ -21,7 +21,14 @@ export type ModalType = {
   onClose: () => void
 }
 
+export type ShippingAddress = {
+  address: string
+  country: string
+  zipCode: number
+}
+
 export type CardData = {
+  id: number | string
   title: string
   description: string
   price: number

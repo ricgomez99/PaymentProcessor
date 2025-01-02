@@ -1,8 +1,10 @@
 import Card from '../../components/Card'
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
-import { afterEach, describe, it, expect, beforeEach } from 'vitest'
+import { afterEach, describe, it, expect, beforeEach, vitest } from 'vitest'
+import { ProductsProvider } from '../../components/ProductsProvider'
 
 const cardMock = {
+  id: 1,
   title: 'Card',
   description: 'a new card',
   price: 25,
@@ -10,29 +12,40 @@ const cardMock = {
   stock: 2,
 }
 
+const mockUsedNavigate = vitest.fn()
+vitest.mock('react-router-dom', () => ({
+  useNavigate: () => mockUsedNavigate,
+}))
+
 describe('Card', () => {
   afterEach(cleanup)
   beforeEach(() =>
     render(
-      <Card
-        title={cardMock.title}
-        description={cardMock.description}
-        price={cardMock.price}
-        imageUrl={cardMock.imageUrl}
-        stock={cardMock.stock}
-      />
+      <ProductsProvider>
+        <Card
+          id={cardMock.id}
+          title={cardMock.title}
+          description={cardMock.description}
+          price={cardMock.price}
+          imageUrl={cardMock.imageUrl}
+          stock={cardMock.stock}
+        />
+      </ProductsProvider>
     )
   )
 
   it('should render the component', () => {
     render(
-      <Card
-        title={cardMock.title}
-        description={cardMock.description}
-        price={cardMock.price}
-        imageUrl={cardMock.imageUrl}
-        stock={cardMock.stock}
-      />
+      <ProductsProvider>
+        <Card
+          id={cardMock.id}
+          title={cardMock.title}
+          description={cardMock.description}
+          price={cardMock.price}
+          imageUrl={cardMock.imageUrl}
+          stock={cardMock.stock}
+        />
+      </ProductsProvider>
     )
   })
 

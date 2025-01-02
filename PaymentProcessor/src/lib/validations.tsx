@@ -27,8 +27,7 @@ export const cardNumberValidation: RegisterOptions<FormValues> = {
 
   validate: (value: string | number) => {
     const formattedValue = String(value)
-    const { isValid, card } = valid.number(formattedValue)
-    console.log(card)
+    const { isValid } = valid.number(formattedValue)
     return isValid || 'Número no válido'
   },
 }
