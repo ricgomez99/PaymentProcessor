@@ -2,12 +2,11 @@ import { FormValues } from './componentTypes'
 
 type Details = Partial<FormValues>
 export interface ProductDetails {
-  productId: number | string
   cardType: string
   saveProductId: (id: number | string) => void
-  getProductId: () => number | string
+  getProductId: () => string | null
   savePaymentDetails: (details: Details) => void
-  getPaymentDetails: () => Details | string | null
+  getPaymentDetails: () => Details | null
   saveCardType: (cardType: string) => void
   getCardType: () => string
 }

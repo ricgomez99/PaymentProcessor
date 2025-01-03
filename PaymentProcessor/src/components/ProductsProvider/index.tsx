@@ -3,18 +3,22 @@ import { useState } from 'react'
 import { FormValues } from '../../types/componentTypes'
 
 export function ProductsProvider({ children }: { children: React.ReactNode }) {
-  const [productId, setProductId] = useState<string | number>('')
   const [cardType, setCardType] = useState('')
 
-  const saveProductId = (id: number | string) => setProductId(id)
-  const getProductId = () => productId
+  const saveProductId = (id: number | string) =>
+    localStorage.setItem('productId', String(id))
+  const getProductId = () => {
+    const id = localStorage.getItem('productId')
+    return id !== null ? id : null
+  }
 
   const savePaymentDetails = (details: Partial<FormValues>) => {
     localStorage.setItem('details', JSON.stringify(details))
   }
   const getPaymentDetails = () => {
     const details = localStorage.getItem('details')
-    return details !== null ? JSON.parse(details) : null
+    const parsed = details !== null ? JSON.parse(details) : null
+    return parsed ? { ...parsed } : null
   }
 
   const saveCardType = (cardType: string) => setCardType(cardType)
@@ -23,7 +27,6 @@ export function ProductsProvider({ children }: { children: React.ReactNode }) {
   return (
     <ProductsContext.Provider
       value={{
-        productId,
         cardType,
         saveProductId,
         getProductId,
