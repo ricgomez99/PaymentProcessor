@@ -28,7 +28,7 @@ export type ShippingAddress = {
 }
 
 export type CardData = {
-  id: number | string
+  id: string
   title: string
   description: string
   price: number

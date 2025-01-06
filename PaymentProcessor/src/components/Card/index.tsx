@@ -1,18 +1,18 @@
 import { useState, useCallback } from 'react'
 import Modal from '../Modal'
 import PayForm from '../PayForm'
-import { CardData } from '../../types/componentTypes'
 import { BiChevronDown } from 'react-icons/bi'
 import { useProductContext } from '../../hooks/useProductContext'
+import { ProductPayload } from '../../types/helpers'
 
 export default function Card({
-  id,
+  _id,
   title,
   description,
   price,
   imageUrl,
   stock,
-}: CardData) {
+}: ProductPayload) {
   const [isOpen, setIsOpen] = useState(false)
   const [showDetails, setShowDetails] = useState(false)
 
@@ -25,9 +25,10 @@ export default function Card({
   const formatPrice = format(price)
 
   const handleClick = useCallback(() => {
-    saveProductId(id)
+    const productId = _id ?? ''
+    saveProductId(productId)
     setIsOpen((prev) => !prev)
-  }, [id, saveProductId])
+  }, [_id, saveProductId])
   const handleOpenDetails = useCallback(
     () => setShowDetails((prev) => !prev),
     []

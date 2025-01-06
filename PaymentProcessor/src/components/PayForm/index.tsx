@@ -5,6 +5,9 @@ import {
   cardExpDateValidation,
   cardNumberValidation,
   nameValidation,
+  zipCodeValidations,
+  shippingAddressValidation,
+  countryValidation,
 } from '../../lib/validations'
 import ErrorMessage from '../ErrorMessage'
 import { FormValues } from '../../types/componentTypes'
@@ -84,22 +87,40 @@ export default function PayForm() {
           placeholder="shipping address"
           role="shippingAddress"
           register={register}
+          validation={shippingAddressValidation}
         />
+        {errors.address && (
+          <ErrorMessage message={String(errors.address.message)} />
+        )}
+
         <div className="flex flex-row justify-between">
-          <InputField
-            title="country"
-            type="text"
-            placeholder="country"
-            role="country"
-            register={register}
-          />
-          <InputField
-            title="zipCode"
-            type="number"
-            placeholder="zip code"
-            role="zipCode"
-            register={register}
-          />
+          <div className="flex flex-col">
+            <InputField
+              title="country"
+              type="text"
+              placeholder="country"
+              role="country"
+              register={register}
+              validation={countryValidation}
+            />
+            {errors.country && (
+              <ErrorMessage message={String(errors.country.message)} />
+            )}
+          </div>
+
+          <div className="flex flex-col">
+            <InputField
+              title="zipCode"
+              type="number"
+              placeholder="zip code"
+              role="zipCode"
+              register={register}
+              validation={zipCodeValidations}
+            />
+            {errors.zipCode && (
+              <ErrorMessage message={String(errors.zipCode.message)} />
+            )}
+          </div>
         </div>
       </aside>
       <button>Continue</button>
