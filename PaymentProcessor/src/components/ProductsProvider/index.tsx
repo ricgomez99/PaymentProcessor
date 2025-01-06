@@ -5,7 +5,7 @@ import { FormValues } from '../../types/componentTypes'
 export function ProductsProvider({ children }: { children: React.ReactNode }) {
   const [cardType, setCardType] = useState('')
 
-  const saveProductId = (id: number | string) =>
+  const saveProductId = (id: string) =>
     localStorage.setItem('productId', String(id))
   const getProductId = () => {
     const id = localStorage.getItem('productId')

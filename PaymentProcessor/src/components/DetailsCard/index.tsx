@@ -1,23 +1,29 @@
-import { cardMocks } from '../../lib/mocks'
 import { useProductContext } from '../../hooks/useProductContext'
-import { CardData } from '../../types/componentTypes'
 import { calculatePrice } from '../../lib/calculatePrice'
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FaCircleCheck } from 'react-icons/fa6'
 import { PiSpinner } from 'react-icons/pi'
 import ToastSuccess from '../Toasts/ToustSuccess'
 import { ToastContainer } from 'react-toastify'
+import { PaymentPayload, ProductPayload } from '../../types/helpers'
+import useQueryProducts from '../../hooks/useQueryProducts'
+import useCreatePayment from '../../hooks/useCreatePayment'
+import useCreateOrder from '../../hooks/useCreateOrder'
+import { mapOrderPayload } from '../../utils/mapPayloads'
 
 export default function DetailsCard() {
-  const [isLoading, setIsLoading] = useState(false)
-  const [paymentDone, setPaymentDone] = useState(false)
+  const { products } = useQueryProducts()
+  const { addOrder } = useCreateOrder()
+  const { addPayment, isPending, isSuccess } = useCreatePayment()
+
   const goTo = useNavigate()
   const { getPaymentDetails, getProductId } = useProductContext()
   const productId = getProductId()
   const orderDetails = getPaymentDetails()
-  const productDetails: Partial<CardData | undefined> =
-    cardMocks && cardMocks.find((card) => String(card.id) === productId)
+
+  const productDetails: ProductPayload | undefined =
+    products && products.find((card) => String(card._id) === productId)
   const { format } = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -26,11 +32,32 @@ export default function DetailsCard() {
   const shippingFee = format(4)
   const deliveryFee = format(2)
   const totalPrice = calculatePrice(4, 2, productDetails?.price ?? 0)
+  let year, month: string | undefined
+
+  if (orderDetails?.expDate) {
+    ;[year, month] = orderDetails.expDate.replaceAll('-', ' ').split(' ')
+  }
+
+  const payment = {
+    number: orderDetails?.cardNumber?.toString(),
+    cvc: orderDetails?.code?.toString(),
+    exp_month: month,
+    exp_year: year?.slice(2, 4),
+    card_holder: orderDetails?.cardName,
+  }
+
+  const order = mapOrderPayload({
+    productId: productId ?? '',
+    quantity: 1,
+    customer: orderDetails?.cardName ?? '',
+    address: orderDetails?.address ?? '',
+    product: productDetails ?? ({} as ProductPayload),
+  })
 
   const renderButtonContent = () => {
-    return isLoading ? (
+    return isPending ? (
       <PiSpinner className="animate-spin" />
-    ) : paymentDone ? (
+    ) : isSuccess ? (
       <FaCircleCheck />
     ) : (
       'Pay now'
@@ -38,13 +65,15 @@ export default function DetailsCard() {
   }
 
   const orderTotal = format(totalPrice)
-  const handlePayment = useCallback(() => {
+  const handlePayment = useCallback(async () => {
     try {
-      setIsLoading(true)
+      const status = await addPayment(payment as PaymentPayload)
+      console.log(status)
+      if (status === 'CREATED') {
+        await addOrder(order)
+      }
       setTimeout(() => {
         ToastSuccess('payment processed!')
-        setIsLoading(false)
-        setPaymentDone(true)
         setTimeout(() => {
           goTo('/')
         }, 3000)
@@ -52,7 +81,7 @@ export default function DetailsCard() {
     } catch (error) {
       if (error instanceof Error) throw new Error(error.message)
     }
-  }, [goTo])
+  }, [])
 
   return (
     <article className="flex flex-col mt-8 justify-between gap-3 lg:min-w-[450px] max-w-3xl bg-[#F8FAFC] rounded-lg p-3 shadow-lg">
@@ -117,7 +146,7 @@ export default function DetailsCard() {
       </aside>
       <button
         className={`${
-          paymentDone && 'bg-green-400 border-green-400 text-white'
+          isSuccess && 'bg-green-400 border-green-400 text-white'
         } flex transition-all duration-150 ease-in-out justify-center items-center focus:outline-none`}
         role="payButton"
         onClick={handlePayment}
